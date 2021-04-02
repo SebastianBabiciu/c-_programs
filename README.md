@@ -1,2 +1,2 @@
-# c_programs
-Here are some of my c# programs
+# c++_programs
+Here are some of my C++ programs
