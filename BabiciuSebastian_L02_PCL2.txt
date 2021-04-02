@@ -1,0 +1,634 @@
+1. Construiţi o funcţie recursivă care calculează A , unde n, k sunt citite de la tastatură. Verificati rezultatul folosind si metoda bazata pe factorial.
+#include <iostream>
+
+using namespace std;
+
+int aranjamente_rec(int, int);
+int aranjamente_nerec(int, int);
+int factorial (int);
+
+int main()
+{
+
+    int n, k;
+    cout << "\n\t Dati termenii: " << endl;
+    cout << "\n\t n = "; cin >> n;
+    cout << "\n\t k = "; cin >> k;
+    if(k>n || n<0 || k<0){
+        return -1;
+    }
+
+    cout << "\n\t Rezultatele sunt : " << endl;
+    cout << "\n\t Cu recursivitate : " << aranjamente_rec (n, k) << endl;
+    cout << "\n\t Nerecursiv : " << aranjamente_nerec(n, k) << endl;
+
+
+}
+int aranjamente_rec(int n, int k)
+{
+
+    if(k==1)return n;
+    else return n*aranjamente_rec(n-1, k-1);
+
+}
+int aranjamente_nerec(int n, int k)
+{
+
+    return (factorial(n)/factorial(n-k));
+
+}
+int factorial (int x)
+{
+
+    int factorial = 1;
+    for (int i=1; i <= x ; i++)
+    {
+        factorial=factorial * i;
+    }
+    return factorial;
+
+}
+
+
+
+=========================================================================================================================================================
+2. Calculati C , n si k fiind preluate de la tastatura, utilizând o funcţie recursivă. Verificati rezultatul folosind si metoda bazata pe factorial.
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+int combinari_rec(int, int);
+int combinari_nerec(int, int);
+int factorial (int);
+
+int main()
+{
+
+    int n, k;
+    cout << "\n\t Dati termenii: " << endl;
+    cout << "\n\t n = "; cin >> n;
+    cout << "\n\t k = "; cin >> k;
+    if(k>n || n<0 || k<0){
+        return -1;
+    }
+
+    cout << "\n\t Rezultatele sunt : " << endl;
+    cout << "\n\t Cu recursivitate : " << combinari_rec (n, k) << endl;
+    cout << "\n\t Nerecursiv : " << combinari_nerec(n, k) << endl;
+
+
+}
+int combinari_rec(int n, int k)
+{
+
+    if(k==0&&n==0)return 1;
+    if(n==k) return 1;
+    else return (float)n/(float)(n-k)*combinari_rec(n-1, k);
+
+}
+int combinari_nerec(int n, int k)
+{
+
+    return (factorial(n)/(factorial(k)*factorial(n-k)));
+
+}
+int factorial (int x)
+{
+
+    int factorial = 1;
+    for (int i=1; i <= x ; i++)
+    {
+        factorial=factorial * i;
+    }
+    return factorial;
+
+}
+
+
+
+
+================================================================================================
+3. Calculul celui mai mare divizor comun a două numere folosind o funcţie recursivă.
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+int cmmdc_rec(int, int);
+
+int main()
+{
+
+    int n, m;
+    cout << "\n\t Dati termenii: " << endl;
+    cout << "\n\t m = "; cin >> m;
+    cout << "\n\t n = "; cin >> n;
+
+    cout << "\n\tCmmdc este : " << cmmdc_rec (m, n) << endl;
+
+}
+int cmmdc_rec(int m, int n)
+{
+
+    if(n==0)return m;
+    else return cmmdc_rec(n, m%n);
+
+}
+
+
+
+=============================================================================================
+4. Se consideră recursivitatea (seria de medii arimetico-geometrice a lui Gauss):
+an=(an-1+bn-1)/2 şi
+bn=sqrt(an-1*bn-1), determinaţi an şi bn, pentru n, a0, b0 introduse de la tastatură.
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+double medie_art_rec(int a0, int b0, int n);
+double medie_geom_rec(int a0, int b0, int n);
+
+int main(void)
+{
+
+    int a0, b0, n;
+    cout << "\n\t Dati valoarea lui a0 : "; cin >> a0;
+    cout << "\n\t Dati valoarea lui bo : "; cin >> b0;
+    cout << "\n\t Dati valoarea lui n : "; cin >> n;
+
+    cout << "\n\t an = " << medie_art_rec(a0, b0, n);
+    cout << "\n\t bn = " << medie_geom_rec(a0, b0, n)<<endl;
+
+}
+double medie_art_rec(int a0, int b0, int n)
+{
+
+    if(n==0)return (float)(a0+b0)/(float)2;
+    else return (float)(medie_art_rec(a0,  b0, n-1));
+
+}
+double medie_geom_rec(int a0, int b0, int n)
+{
+
+    if(n==0)return (float)sqrt(a0*b0);
+    else return (float)(medie_geom_rec(a0,  b0, n-1));
+
+}
+
+
+
+=============================================================================================================================
+5. Citiţi un şir de caractere de la tastatură, caracter cu caracter, cu ajutorul unei funcţi bazate pe
+caracter. Afişaţi şirul în ordine inversă folosind o funcţie recursivă.
+#include <iostream>
+#include <stdio.h>
+#include <string>
+
+using namespace std;
+void invers_rec(string sir, int);
+
+int main(void)
+{
+
+    string sir;
+    cout << "\n\t Dati sirul : "; getline(cin, sir);
+    int n = sir.length();
+    cout << "\n\t Sirul introus invers este : "; invers_rec(sir, n);
+
+}
+void invers_rec(string sir, int n)
+{
+
+    if(n==0)cout << sir[0];
+    else
+    {
+        cout << sir[n];
+        invers_rec(sir, n-1);
+        }
+
+}
+
+
+
+===================================================================================================================
+6. Determinaţi printr-o funcţie recursivă produsul scalar al doi vectori (tablouri unidimensionale
+de aceiasi lungime).
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+void citire_rec(int dim, int *tab);
+int product_rec(int dim, int *tab1, int *tab2);
+
+int main()
+{
+
+    int dim, *tab1=new int[dim], *tab2=new int [dim];
+    cout << "\n\t Dati dimeniunea : "; cin >> dim;
+
+    cout << "\n\n\tDati elementele primului vector: ";
+    citire_rec(dim, tab1);
+    cout << "\n\tDati elementele celui de-al doilea vector: ";
+    citire_rec(dim, tab2);
+
+
+    cout << "\n\t Produsul scalar dintre cei doi vectori este " << product_rec(dim, tab1, tab2) << endl;
+
+}
+void citire_rec(int dim, int *tab)
+{
+    int i;
+    for (i=0; i< dim; i++)
+    {
+        cout << "\n\t elementul " << i+1 << " : "; cin >> tab[i];
+    }
+
+}
+int product_rec(int dim, int *tab1, int *tab2)
+{
+
+    if (dim == 0)
+        return tab1[0]*tab2[0];
+    else
+        return (tab1[dim]*tab2[dim]+product_rec(dim-1, tab1, tab2));
+}
+
+
+
+======================================================================================================================
+7. Să se calculeze suma numerelor impare dintr-un tablou unidimensional de numere întregi în
+mod recursiv, tablou citit dintr-un fişier unde, ca primă valoare, avem numărul de elemente ale
+tabloului.
+#include <stdio.h>
+#include <stdlib.h>
+
+void citire(int *, int, FILE *f);
+int recursiv(int *, int);
+
+int main(void)
+{
+
+    int *tab, n;
+    FILE *f=fopen("ex7.txt", "r+");
+    if(f)
+    {
+        fscanf(f, "%d", &n);
+
+        citire(tab, n, f);
+        fclose(f);
+
+        printf("\n\t Suma numerelor impare este : %d", recursiv(tab, n));
+    }
+    else printf("\n\t Eroarre...");
+
+}
+void citire(int *p, int n, FILE *f)
+{
+    for(int i=0; i< n;i++)
+    {
+        fscanf(f, "%d", &p[i]);
+    }
+
+}
+int recursiv(int *p, int n)
+{
+    if(n==0){
+        if(p[n]%2!=0) return p[n];
+        else return 0;
+    }
+    else
+    {
+        if(p[n]%2!=0)return p[n]+recursiv(p, n-1);
+        else return recursiv(p, n-1);
+    }
+
+}
+
+
+
+====================================================================================================================
+8. Analog cu problema precedentă, dar se calculează produsul elementelor aflate pe poziţii
+impare într-un tablou unidimensional, respectiv să se calculeze suma numerelor prime din
+tablou.
+#include <stdio.h>
+#include <stdlib.h>
+
+void citire(int *, int, FILE *f);
+int prod_recursiv(int *, int);
+int nr_prim(int);
+int prim_recursiv(int *, int);
+
+int main(void)
+{
+
+    int *tab, n;
+    FILE *f=fopen("ex8.txt", "r+");
+    if(f)
+    {
+        fscanf(f, "%d", &n);
+
+        citire(tab, n, f);
+        fclose(f);
+
+        printf("\n\t Produsul numerelor de pe pozitii impare este : %d", prod_recursiv(tab, n));
+        printf("\n\t Suma numerelor prime este : %d", prim_recursiv(tab, n));
+    }
+    else printf("\n\t Eroarre...");
+
+}
+void citire(int *p, int n, FILE *f)
+{
+    for(int i=0; i< n;i++)
+    {
+        fscanf(f, "%d", &p[i]);
+    }
+
+}
+int prod_recursiv(int *p, int n)
+{
+    if(n==0){
+        if(n%2!=0) return p[n];
+        else return 0;
+    }
+    else
+    {
+        if(n%2!=0)return p[n]*prod_recursiv(p, n-1);
+        else return prod_recursiv(p, n-1);
+    }
+}
+int nr_prim(int nr)
+{
+
+    int ok=1;
+    for(int i=2; i< nr; i++){
+            if(nr%i!=0) ok=0;
+        }
+    return ok;
+    
+}
+int prim_recursiv(int *p, int n)
+{
+
+    if(n==0){
+        if(nr_prim(p[n])) return p[n];
+        else return 0;
+    }
+    else
+    {
+        if(nr_prim(p[n]))return p[n]+prim_recursiv(p, n-1);
+        else return prim_recursiv(p, n-1);
+    }
+
+}
+
+
+
+===============================================================================================================================
+9. Folosind o funcție recursivă, calculați suma valorilor introduse de la tastatură cu confirmare,
+adică cereți utilizatorului să indice dacă mai dorește să mai introducă o nouă valoare sau nu.
+Modificați funcția pentru a calcula și afișa, și media valorilor date de utilizator. Semnalați
+printr-un mesaj când suma valorilor depășește o anumită valoare prestabilită.
+#include <iostream>
+#include <string>
+#include <conio.h>
+#define val 30
+
+using namespace std;
+
+int suma_rec(int tab[100], int i);
+float medie(int (*suma_rec)(int tab[100], int i), int tab[100], int i, int n);
+
+int main()
+{
+
+    int tab[100], i=0;
+    char ch=97, ch1;
+
+    cout << "\n\t Dati valori : " << endl;
+
+    do
+    {
+        cout << "\n\t Dati un numar : ";cin >> tab[i];
+        cout << "\t Daca doriti sa finalizati apasati orice tasta inafara de 'a', altfel apasati 'a'! "; cin >> ch1;
+        if(ch1==ch) i++;
+    }while(ch1==ch);
+
+    cout << "\n\t Suma numerelor este : " << suma_rec(tab, i) << endl;
+    if(suma_rec(tab, i)>val){
+            cout << "\n\t Ati depasit valoarea 30." << endl;
+        }
+    int n=i+1;
+    cout << "\n\t Media numerelor este : " << medie(suma_rec, tab, i, n) << endl;
+    return 0;
+
+}
+int suma_rec(int tab[100], int i)
+{
+
+    if(i==0)return tab[0];
+    else return tab[i]+suma_rec(tab, --i);
+
+}
+float medie(int (*suma_rec)(int tab[100], int i), int tab[100], int i, int n)
+{
+
+    int mijl, s1, s2;
+    if(i==0)return tab[0];
+    return (float)(suma_rec(tab, i))/(float)n;
+}
+
+
+
+===============================================================================================================================
+10. Considerați un șir de n (<=30) de valori întregi. Determinați în mod recursiv și nerecursiv
+numărul de apariții în șir ale unei valori întregi x cititite de la tastatură.
+#include <iostream>
+#include <assert.h>
+
+using namespace std;
+
+void citire(int n, int tab[30]);
+void afisare(int n, int tab[30]);
+int aparitii_nerec(int n, int tab[30], int x);
+int aparitii_rec(int n, int tab[30], int x);
+
+int main(void)
+{
+
+    int tab[30], n, x;
+    cout << "\n\t Dati numarul de valori intregi : "; cin >> n;
+    if(n>30){
+        cout << "\n\t Dati numarul de valori intregi (n<=30): "; cin >> n;
+    }
+
+    citire(n, tab);
+    afisare(n, tab);
+
+    cout << "\n\t Introduceti valoarea de cautat x = "; cin >> x;
+    cout << "\n\t Nr de aparitii din sir a valorii " << x << " nerecursiv este : " << aparitii_nerec(n, tab, x)<< endl;
+    cout << "\n\t Nr de aparitii din sir a valorii " << x << " recursiv este : " << aparitii_rec(n, tab, x) << endl;
+
+}
+void citire(int n, int tab[30])
+{
+
+    for(int i=0; i< n; i++)
+    {
+        cout << "\n\t nr" << i+1 << " = "; cin >> tab[i];
+    }
+
+}
+void afisare(int n, int tab[30])
+{
+
+    cout << "\n\t Sirul introdus este : ";
+     for(int i=0; i< n; i++)
+    {
+        cout << "  " << tab[i];
+    }
+
+}
+int aparitii_nerec(int n, int tab[30], int x)
+{
+    int nr=0;
+     for(int i=0; i< n; i++)
+     {
+         if (tab[i]==x)nr++;
+     }
+
+    return nr;
+
+}
+int aparitii_rec(int n, int tab[30], int x)
+{
+    if (n==0)
+    {
+     if (tab[n]==x)
+            return 1;
+        else return 0;
+    }
+    else
+    {
+        if(tab[n]==x)
+            return 1+ aparitii_rec(n-1, tab, x);
+
+    else return aparitii_rec(n-1, tab, x);
+    }
+}
+
+
+
+=============================================================================================================================
+11. Considerați un număr n întreg pozitiv în baza 10 introdus de la tastatură. Folosind o funcție
+recursivă convertiți valoarea n într-o altă bază de numerație 1<b<10 citită de la tastatură.
+#include <iostream>
+#include <assert.h>
+
+using namespace std;
+
+int convert_rec(int, int);
+
+int main(void)
+{
+
+    int n, b;
+    cout << "\n\t Dati n = "; cin >> n;
+    assert(n>=0);
+
+    cout << "\n\t Dati o baza de numeratie b(1<b<10) = "; cin >> b;
+    assert(b>1 && b<10);
+
+    cout << "\n\t Numarul " << n << " convertit din baza 10 in baza " << b << " este : " << convert_rec(n, b);
+    cout << "\n\n";
+
+}
+int convert_rec(int n, int b)
+{
+
+    if(n==0)return 0;
+    return n%b + convert_rec(n/b, b)*10;
+
+}
+
+
+
+================================================================================================================================================================================================================
+12. Fie ecuația de gradul 2: x2 –sx +p=0. Fără a calcula rădăcinile x1 și x2 determinați Sn = x1^n +x2^n, folosind reprezentarea recursivă a sumei: Sum(n) ={ 2, dacă n=0; s, dacă n=1; s*Sum(n-1) – p*Sum(n-2), dacă n>1; } unde s și p sunt valori reale iar n întreagă, introduse de la tastatură. Verificați dacă e posibil rezultatul obținut.
+#include <iostream>
+#include <assert.h>
+
+using namespace std;
+double sum(int n, float s, float p);
+
+int main(void)
+{
+
+    float s, p;
+    int n;
+
+    cout << "\n\t Dati s = "; cin >> s;
+    cout << "\n\t Dati p = "; cin >> p;
+    cout << "\n\t Dati n = "; cin >> n;
+    assert(n>=0);
+
+    cout << "\n\t Sn= x1^n + x2^n = " << sum(n, s, p);
+
+}
+double sum(int n, float s, float p)
+{
+
+    if(n==0)return 2;
+    if(n==1)return s;
+    return s*sum(n-1, s, p)-p*sum(n-2, s, p);
+
+}
+
+
+
+==================================================================================================================
+13. Scrieți un program care să calculeze în mod recursiv și în mod nerecursiv valoarea seriei
+armonice sn=1/1+1/2+1/3+…1/n, unde n este un număr natural, cu două funcții diferite.
+Apelați cele două funcții cu diferite valori ale lui n.
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+float functie_rec(int);
+float functie_nerec(int);
+
+int main(void)
+{
+
+    int n1, n2;
+    cout << "\n\t Dati valoarea lui n1 : "; cin >> n1;
+    cout << "\n\t Dati valoarea lui n2 : "; cin >> n2;
+
+    cout << "\n\t Suma armonica recursiv pentru n1 = " << n1 << " este " << functie_rec(n1);
+    cout << "\n\t Suma armonica recursiv pentru n2 = " << n2 << " este " << functie_rec(n2);
+    cout << "\n\t Suma armonica nerecursiv pentru n1 = " << n1 << " este " << functie_nerec(n1);
+    cout << "\n\t Suma armonica nerecursiv pentru n2 = " << n2 << " este " << functie_nerec(n2);
+
+
+}
+float functie_nerec(int x)
+{
+
+    float suma=0.0;
+    for(int i=1; i<=x; i++)
+    {
+        suma+=(float)1/(float)i;
+    }
+    return suma;
+
+}
+float functie_rec(int x)
+{
+
+    if(x==1)return 1;
+    else return (float)1/x+functie_rec(x-1);
+
+}

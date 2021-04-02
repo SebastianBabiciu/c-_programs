@@ -1,0 +1,811 @@
+2. Fie un sistem de calcul care urmăreşte controlul unui proces de transmisie a datelor pe o linie principală având un debit maxim de 40MB/s. Fluxul de date de pe această linie este împărţit de către maxim 10 utilizatori, traficul pe liniile oferite lor putându-se efectua cu debite între 2 şi 40 MB/s (valori intregi). Impărţirea debitelor pe cele maxim 10 linii se face în mod dinamic de către sistemul de control considerând pentru fiecare linie i, o pondere subunitară pi, asociată la configurarea sistemului funcţie de utilizator. Introduceţi iniţial cele maxim 10 ponderi pi astfel încât suma lor să fie egală cu 1. Dacă această condiţie este verificată generaţi toate soluţiile posibile considerând că pe linia principală vom avea cel puţin un debit de 2MB/s, deci de 2...40MB/s determinând în aceste cazuri debitele posibile pe cele maxim 10 linii de intrare ale utilizatorilor (ajustate la intregi MB/s). Se pune pe 0, dacă nu se poate asigura minimul de 2MB/s. Afişaţi aceste soluţii. Implementarea poate fi recursivă sau nerecursivă.
+#include <iostream>
+#include <assert.h>
+#define max 10
+
+using namespace std;
+
+void impartire(double *p, int n, double *f);
+
+int debit;
+
+int main(void)
+{
+
+    int n;
+    cout << "\n\t Dati numarul de utilizatori : "; cin >> n;
+    assert(n<10);
+
+    cout << "\n\t Dati debitul maxim de pe linia principala : "; cin >> debit;
+    assert (debit<40 &&debit>2);
+
+    double p[max], s=0.0, f[max];
+    do
+    {
+        for(int i=0; i<n; i++)
+        {
+            cout << "\n\t p" << i+1 << " = "; cin >> p[i];
+            s+=p[i];
+        }
+    }while (s!=1.0);
+
+    impartire(p, n, f);
+
+    cout << "\n\n";
+
+}
+void impartire(double *p, int n, double *f)
+{
+
+    int i;
+    double fp;
+    for(fp=2.0 ; fp<=debit; fp++)
+    {
+        cout << "\n\t Cazul " << fp-1 << " : ";
+        for(int i =0; i< n; i++)
+        {
+            cout << "\n\t\t linia " << i+1 << " : ";
+            f[i]=p[i]*fp;
+            if(f[i]<2) f[i]=0;
+            cout << f[i] << " ";
+        }
+    }
+
+}
+
+
+
+====================================================================================================================================================================================================
+3. În cadrul unei companii de software se pune problema difuzării unor pachete de date la mai multe filiale, maxim 7, valoarea fiind introdusă de la intrarea standard. Filialele sunt dispuse în mai multe puncte din lume, costurile de transmisie fiind dependente de poziţia lor geografică. Pachetele trebuie să ajungă la fiecare filială chiar dacă nu există o legătură directă între toate filialele ci prin intermediul unei alte filiale caz în care pachetul va urma o rută ocolitoare. Costurile necesare transmiterii datelor în reţea se introduc iniţial la generarea sistemului. Să se determine şi afişeze ruta pe care trebuie transmise pachetele de date astfel încât pornind de la filiala i, citită de la intrarea standard pachetul să fie transmis cu cost minim (eventual cu confirmare adică pachetul poate să se întoarcă înapoi). Implementarea poate fi recursivă sau nerecursivă.
+#include <iostream>
+#include <assert.h>
+#include <limits.h>
+
+using namespace std;
+
+void afisare();
+void citire();
+int posibil (int k);
+void cost_min();
+void back(int k);
+
+int n, **cost, *nrF, *cf, **drum, *x, fs;
+
+int main(void)
+{
+
+    cout << "\n\t Dati nr de filiale (<7) : ";cin >> n;
+    assert (n<7 || n>0);
+
+    cost=new int*[n];
+    drum=new int*[n];
+    x=new int[n];
+    nrF=new int [n];
+    cf=new int [n];
+    if(!(cost=new int*[n])&&!(drum=new int*[n])&&!(x=new int[n])&&!(nrF=new int [n])&&!(cf=new int [n]))
+    {
+        cout << "\n\t Alocare nereusita.."; return -1;
+    }
+    else
+    {
+
+        citire();
+        afisare();
+
+    for(int i=0; i<n; i++)
+    {
+        for(int j=0; j<n; j++)
+        {
+            drum[i][j]=0;
+            nrF[i]=-1;
+            cf[i]=INT_MAX;
+        }
+    }
+
+    cout << "\n\t Dati filiala a carei costuri vreti sa le aflati : "; cin >>fs;
+    fs=-1;
+    x[0]=fs;
+    back(1);
+    cost_min;
+
+}
+}
+void citire()
+{
+
+    cout << "\n\t Introduceti costurile cerute : " << endl;
+    for(int i=0; i<n; i++)
+        for(int j=0; j<n; j++)
+            if(i==j) cost[i][j]=0;
+            else
+            {
+                cout << "\n\t cost intre filiala " << i+1 << " si filiala " << j+1 << " : ";cin >> cost[i][j];
+            }
+
+}
+void afisare()
+{
+
+    cout << "\n\t Costurile arata in felul uramtor : " << endl;
+    for(int i=0; i<n; i++)
+        for(int j=0; j<n; j++)
+            cout << "\n\t Costul intre filiala " << i+1 << " si filiala " << j+1 << " : " << cost[i][j];
+
+}
+
+void back(int k)
+{
+
+    for(int i=0; i<n; i++)
+    {
+        x[k]=i;
+        if(posibil(k)) back(k+1);
+    }
+
+}
+
+int posibil (int k)
+{
+
+    int s=0;
+    if(cost[x[k-1]][x[k]]==0) return 0;
+    for(int i=0; i<k; i++)
+        if(x[k]==x[i]) return 0;
+    for(int i=0; i<k; i++) s+=cost[x[i]][x[i+1]];
+    {
+        nrF[x[k]]=k;
+        cf[x[k]]=s;
+        for(int j=0; j<=k; j++) drum[j][x[k]]=x[j];
+    }
+
+}
+void cost_min()
+{
+
+    cout << "\n\t Drumurile cu costul minim :";
+     for(int j=0; j<n; j++)
+        if(j!=fs)
+     {
+
+         cout << "\n\t Drum de la " << fs+1 << " la " << j+1 << " : ";
+         if(nrF[j]==-1) cout << "\n\t Imposibil de ajuns...";
+         else
+         {
+             cout <<"\n\t Costul este : " << cf[j] << ", iar drumul : ";
+             for(int i=0 ; i<=nrF[j]; i++) cout << drum[i][j]+1 << "  ";
+         }
+
+     }
+
+}
+
+
+
+===================================================================================================================================================================================================
+4. Problema investirii optime de capital: pentru un investitor cu un capital C şi n oferte la care trebuie avansate fondurile fi şi care aduc beneficiile bi, se cere selectarea acelor oferte care îi aduc beneficiul maxim.
+#include<stdio.h>
+#include<iostream>
+
+using namespace std;
+
+void citire();
+void back(int k, int fp, int bp);
+void save(int k, int max);
+void afis();
+
+int n, c, bm, f[20], b[20], m[20], x[20];
+
+int main(void)
+{
+	citire();
+	bm = 0;
+	back(1, 0, 0);
+	afis();
+}
+void afis()
+{
+	if (bm != 0)
+	{
+		cout << "\nBeneficiul maxim este:" << bm << " obtinut investind in ofertele : ";
+
+			for (int i = 1; i <= m[0]; i++)
+			{
+				cout << m[i] << ", ";
+			}
+		cout << "\b\b\n";
+	}
+	else
+		cout << "\Nu se poate investi in nici o oferta, capitalul este prea mic!";
+
+}
+void save(int k, int max)
+{
+	if (max>bm)
+	{
+		m[0] = k;
+		for (int i = 1; i <= k; i++)
+			m[i] = x[i];
+		bm = max;
+	}
+}
+void back(int k, int fp, int bp)
+{
+	int u[20]; 
+	if (fp>c) save(k - 2, bp - b[x[k - 1]]);
+	else
+		for (int i = 1; i <= n; i++)
+			if (!u[i])
+			{
+				x[k] = i;
+				u[i] = 1;
+				back(k + 1, fp + f[i], bp + b[i]);
+				u[i] = 0;
+			}
+}
+void citire()
+{
+	cout << "Introduceti valoarea capitalului:";
+	cin >> c;
+	cout << "Introduceti numarul de oferte:";
+	cin >> n;
+	for (int i = 1; i <= n; i++)
+	{
+		cout << "\nIntroduceti fondurile necesare si beneficiile aduse pentru oferta "<<i;
+
+        cout << "\nFondul " << i << " = ";
+		cin >> f[i];
+		cout << "beneficiul " << i << " = ";
+		cin >> b[i];
+	}
+}
+
+
+
+========================================================================================================================================================================================================
+5. Creaţi un fişier în care stocaţi un şir de numere întregi, generate in mod aleator. Preluaţi prin program aceste valori. Folosiţi metoda divide et impera pentru a determina minimul şi maximul din şir şi afisaţi rezultatele pe ecran. Actualizaţi fişierul iniţial adăugând aceste două valori.
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <malloc.h>
+
+void citire(int , int *, FILE *);
+void afisare(int n, int *tab);
+int maxim(int n, int *tab);
+int MAX(int a, int b);
+int minim(int n, int *tab);
+int MIN(int a, int b);
+
+int main()
+{
+
+    FILE *f=fopen("pb5.txt", "w+");
+    int *tab, n, *p=NULL;
+    size_t t;
+
+    if(f)
+    {
+        printf("\n\t Dati dimensiunea : ");
+        scanf("%d", &n);
+
+        tab=(int*)malloc(n*sizeof(int));
+
+        srand((unsigned)time(NULL));
+        for(int i=0; i<n; i++)
+        {
+            fprintf(f, "%d ", rand()%100);
+        }
+
+        citire(n, tab, f);
+        printf("\n\t Sirul este :  ");
+        afisare(n, tab);
+
+        printf("\n\t Maximul din sir este : %d.\n", maxim(n, tab));
+        printf("\n\t Minimul din sir este : %d.\n", minim(n, tab));
+
+        fprintf(f, "\n\t Maximul din sir este : %d.\n", maxim(n, tab));
+        fprintf(f, "\n\t Minimul din sir este : %d.\n", minim(n, tab));
+
+        fclose(f);
+    }
+    else printf("\n\t EROARE...");
+
+    return 0;
+}
+void citire(int n, int *tab, FILE *f)
+{
+
+    for(int i=0; i<n; i++)
+    {
+        fscanf(f, "%d", (tab+i));
+    }
+
+}
+void afisare(int n, int *tab)
+{
+
+    for(int i=0; i<n; i++)
+    {
+        printf("%d  ", *(tab+i));
+    }
+
+}
+int MAX(int a, int b)
+{
+    if(a<b)return b;
+    return a;
+}
+int maxim(int n, int *tab)
+{
+
+    int max;
+    if(n==0) return tab[0];
+    else{
+        max=maxim(n-1, tab);
+    }
+    return MAX(tab[n-1], max);
+
+}
+int MIN(int a, int b)
+{
+    if(a<b)return a;
+    return b;
+}
+int minim(int n, int *tab)
+{
+
+    int min;
+    if(n==0) return tab[0];
+    else{
+        min=minim(n-1, tab);
+    }
+    return MIN(tab[n-1], min);
+
+}
+
+
+
+====================================================================================================================================================================================
+6. Scrieţi o aplicaţie care determină c.m.m.d.c. dintr-un tablou unidimensional de numere întregi (max. 2000 de valori), utilizând metoda divide et impera. Elementele tabloului se pot citi de la tastatură sau dintr-un fisier.
+#include <iostream>
+#include<assert.h>
+#include <cmath>
+
+using namespace std;
+
+int cmmdc_tablou(int tab[2000], int );
+int cmmdc(int n, int m);
+
+int main(void)
+{
+
+    int *tab, n;
+
+    cout << "\n\t Dati n(dimensiunea) : ";cin >> n;
+    assert(n < 2000);
+
+    tab=new int[n];
+
+    cout << "\n\t Dati elementele : ";
+    for(int i=0; i<n; i++)
+    {
+
+        cout << "\n\t elementul " << i+1 << " = " ;cin >> *(tab+i);
+
+    }
+    cout << "\n\t Cmmdc din tablou este : " << cmmdc_tablou(tab, n);
+
+}
+int cmmdc(int n, int m)
+{
+
+    if(m==0)return n;
+    else return cmmdc(m, n%m);
+
+}
+int cmmdc_tablou(int *tab, int n)
+{
+
+    int c;
+    if(n<=2)return cmmdc(tab[0], tab[n-1]);
+    else
+    {
+        c=cmmdc(cmmdc_tablou(tab, n-1), tab[n-1]);
+    }
+    return c;
+}
+
+
+
+==================================================================================================================================================================================================
+7. Să se calculeze ∫ab 1/(1+x2)dx, cu ajutorul metodei trapezelor, astfel încât inălţimea fiecărui trapez a cărui arie se însumează să fie mai mică decât ε=0.0001. Aria trapezului cu vârfurile în punctele (a,0), (b,0), (a,f(a)) şi (b,f(b)) este (b-a)*(f(a)+f(b))/2, iar f(x)=1/(1+x2). Se citesc de la tastatură numerele reale a şi b, a≤b. Utilizaţi metoda divide et impera.
+#include <iostream>
+#include <stdio.h>
+#include <cmath>
+#define eps 0.0001
+
+using namespace std;
+
+double integrala(double a, double b, double (*functie)(double x));
+double functie(double x);
+
+
+int main(void)
+{
+
+    double a, b;
+
+    cout << "\n\t Dati a = "; cin >> a;
+    cout << "\n\t Dati b = "; cin >> b;
+
+
+    cout << "\n\t Integrala din f(x)=1/(1+x^2) de la " << a << " la " << b << " este : " << integrala(a,b,functie)<< endl;
+
+}
+double functie(double x)
+{
+
+    return 1/(1+x*x);
+
+}
+double integrala(double a, double b, double (*functie)(double x))
+{
+
+    double s1, s2, m;
+
+    if(b-a<eps) return (functie (a) + functie(b))*(b-a)/2.0;
+    else
+    {
+
+        m=(a+b)/2;
+        s1=integrala(a, m, functie);
+        s2=integrala(m, b, functie);
+        return s1+s2;
+
+    }
+
+}
+
+
+
+==================================================================================================================================================================================================
+8. Să se scrie o aplicație C/C++ care să genereze aleator maxim 10 valori întregi, ce vor fi memorate într-un tablou unidimensional. Să se verifice dacă o altă valoare generată aleator aparține acestui tablou, utilizând funcția _lsearch().
+#include <stdio.h>
+#include <assert.h>
+#include <time.h>
+#include <malloc.h>
+#include <search.h>
+
+using namespace std;
+
+int verificare(int *p, int *key, int n);
+int cmp(int *a, int *b);
+
+int main(void)
+{
+
+    int *tab, n;
+
+     printf("\n\t Dati n(dimensiunea) : ");
+     scanf("%d", &n);
+    assert(0<n && n<=10);
+
+    tab=(int*)malloc((n+1)*sizeof(int));
+
+    srand(time(NULL));
+    for(int i=0; i<n+1; i++)
+    {
+        *(tab+i)=rand()%100;
+    }
+
+        printf("\n\t Sirul este :");
+    for(int i=0; i<n; i++)
+    {
+        printf("  %d ", *(tab+i));
+    }
+
+    int *val=&tab[n];
+
+    printf("\n\t Valoarea este : %d\n", *val);
+
+    if(verificare(tab, val, n)) printf("\n\t Valoarea se regaseste in tabel.\n");
+    else{
+        printf("\n\t Valoarea nu se regaseste in tabel.\n");
+    }
+
+}
+int verificare(int *p, int *key, int n)
+{
+
+    int n1=n;
+    _lsearch(key, p, (size_t *)&n, sizeof(int *),(int(*)(const void *, const void *))cmp);
+    return(n1 == n);
+
+}
+int cmp(int *a, int *b)
+{
+    if(a==b)return 0;
+    else return -1;
+}
+
+
+
+======================================================================================================================================================================================================
+9. Scrieţi o aplicaţie C/C++ care să găsească imaginile cele mai apropiate folosind pe rând o cheie de căutare din antetul imaginii. Antetul este reprezentat printr-o structură ce conţine un nume de fişier (sir de caractere), o cale (sir de caractere), o rezoluţie de intensitate (întreg), o dimensiune în octeţi (întreg). Pentru fiecare cheie folosiţi o metodă diferită de căutare. Antetul imaginilor se află stocat într-un fişier sau se citeşte într-un tablou de structuri de la tastatură.
+#include <stdio.h>
+#include <malloc.h>
+#include <string.h>
+#include <string>
+#include <search.h>
+
+using namespace std;
+
+struct image
+{
+    char fis[30], way[30];
+    int rez, dim;
+};
+
+void citire(struct image *p);
+int compare(image *x, image *y);
+int compare1(struct image *x, struct image *y);
+
+int main(void)
+{
+
+    struct image *im, *im1, *im2;
+    int n, dim1;
+    char nume[30];
+    printf("\n\t Introduceti nr de imagini : "); scanf("%d", &n);
+
+    im = (struct image*)malloc(n*sizeof(image));
+    if(im)
+    {
+           for(int i=0; i<n; i++)
+        {
+            printf("\n\t Detaliile pozei %d : ", i+1);
+            citire (im+i);
+        }
+
+        printf("\n\t Introduceti numele imaginii pe care doriti sa o cautati : "); scanf("%s", nume);
+        printf("\n\t Introduceti dimensiunea imaginii pe care doriti sa o cautati : "); scanf("%d", &dim1);
+
+        im1== (struct image*)_lfind(&nume, im, (size_t*)&n, sizeof(image), (int(*)(const void*, const void*))compare1);
+
+        if(im1) printf("\n\t Imaginea %s s-a gasit.\n", nume);
+        else printf("\n\t Imaginea %s nu s-a gasit.\n", nume);
+
+         im2== (struct image*)_lfind(&dim1, im, (size_t*)&n, sizeof(image), (int(*)(const void*, const void*))compare);
+
+        if(im2)printf("\n\t Imaginea cu dimensiunea : %d s-a gasit.\n", dim1);
+        else printf("\n\t Imaginea cu dimensiunea : %d nu s-a gasit.\n", dim1);
+
+        free(im);
+    }
+    else printf("\n\t Eroare ...");
+
+
+}
+void citire(struct image *p)
+{
+
+    printf("\n\t nume : "); scanf("%s", p->fis);
+    printf("\n\t cale : "); scanf("%s", p->way);
+    printf("\n\t rezolutie : "); scanf("%d", &p->rez);
+    printf("\n\t dimensiune : "); scanf("%d", &p->dim);
+
+}
+int compare(image *x, image *y)
+{
+	return ((x -> dim) - (y -> dim));
+}
+
+int compare1(struct image *x, struct image *y)
+{
+	return _stricmp(x -> fis, y -> fis);
+}
+
+
+
+===================================================================================================================================================================================================
+10. Citiți de la intrarea standard un tablou unidimensional de maxim 20 de valori întregi. Folosind mecanismul de căutare binară, determinați dacă o nouă valoare, a, introdusă de la tastatură există în șir. Dacă da, determinați toți factorii primi ai acestei valori pe care îi veți afișa pe ecran.
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+
+using namespace std;
+
+int cautare_bin(int a, int* tab, int st, int dr);
+void citire(int n, int* tab);
+void verificare_nr_prim(int* x, int nr);
+int cmpfunc(const void* a, const void* b);
+void afisare(int n, int* tab);
+
+int main(void)
+{
+
+    int n, * tab, a, rez, x[100], nr{};
+
+    do {
+        cout << "\n\t Dati dimensiunea : "; cin >> n;
+    } while (n > 20);
+
+    tab = new int[n];
+
+    citire(n, tab);
+
+    qsort(tab, n, sizeof(int), cmpfunc);
+    cout << "\n\t Sirul orodnat este : "; afisare(n, tab);
+    cout << "\n\t Dati valoarea de cautat : a =  "; cin >> a;
+
+    rez = cautare_bin(a, tab, 0, n - 1);
+    if (rez != -1)
+    {
+        cout << "\n\t Valoarea introdusa se afla in sir!";
+
+        verificare_nr_prim(x, a);
+        cout << "\n\n";
+    }
+    else
+        cout << "\n\t Valoarea introdusa nu se afla in sir!";
+    cout << "\n\n";
+
+}
+void citire(int n, int* tab)
+{
+
+    cout << "\n\t Dati elementele tabloului : " << endl;
+    for (int i = 0; i < n; i++)
+    {
+        cout << "\n\t elementul " << i + 1 << " = "; cin >> tab[i];
+    }
+
+}
+int cautare_bin(int a, int* tab, int st, int dr)
+{
+
+    if (st > dr) return -1;
+    int m = (st + dr) / 2;
+
+    if (tab[m] == a) return m;
+    if (tab[m] > a) return cautare_bin(a, tab, st, m - 1);
+    if (tab[m] < a) return cautare_bin(a, tab, m + 1, dr);
+
+}
+void verificare_nr_prim(int x[100], int a)
+{
+
+    int nr = 0, j, nr1;
+    for (int i = 1; i < a; i++)
+    {
+        if (a % i == 0) {
+            for (j = 0; j < a; j++)
+                x[j] = i;
+            nr++;
+            nr1 = nr;
+        }
+    }
+    cout << "\n\t Toti factorii primi a lui " << a << " sunt : ";
+    for (int i = 0; i < nr1; i++)
+    {
+        int ok = 1;
+        for (int j = 2; j < x[i]; j++) {
+            if (x[i] % j != 0)
+            {
+                ok = 0;
+                if (ok == 0) cout << " " << x[i];
+                break;
+            }
+        }
+    }
+}
+int cmpfunc(const void* a, const void* b) {
+    return (*(int*)a - *(int*)b);
+}
+void afisare(int n, int* tab)
+{
+
+    for (int i = 0; i < n; i++) cout << "  " << tab[i];
+
+}
+
+
+
+=======================================================================================================================================================================================================
+11. Folosind un fișier care conține numere reale ordonate, căutați o valoare reală a introdusă de la tastatură în cadrul șirului, folosind algoritmul de căutare binară iterativ, recursiv și funcția de bibliotecă bsearch(). Afișați șirul citit, valoarea a și poziția folosind cei trei algoritmi specificați.
+#include <stdio.h>
+#include <stdlib.h>
+
+void citire(float *tab, FILE *f, int n);
+void afisare(float *tab, int n);
+int iterativ(float tab[], int n, float a);
+int recursiv(float a, float *tab, int st, int dr);
+int cmp(float *a, float *b);
+void nu(float a);
+
+int main(void)
+{
+
+    FILE *f=fopen("ex11.txt", "r");
+    int  n;
+    float *tab=NULL, a, *p;
+
+    if (f)
+    {
+
+        printf("\n\t Dati valoare de cautat a = "); scanf("%f", &a);
+        fscanf(f, "%d", &n);
+
+        tab=(float*)malloc(n*sizeof(float));
+        citire(tab, f, n);
+
+        p=(float*)bsearch(&a, tab, n, sizeof(float), (int(*)(const void*, const void*)) cmp);
+        if(p!=NULL && recursiv(a, tab, 0, n)!=-1 && iterativ(tab, n, a)!=-1)
+        {
+            printf("\n\t Valoarea %.2f a fost gasita pe pozitia %d in mod iterativ.\n", a, iterativ(tab, n, a));
+            printf("\n\t Valoarea %.2f a fost gasita pe pozitia %d in mod recursiv.\n", a, recursiv(a, tab, 0, n));
+            printf("\n\t Valoarea %.2f a fost gasita pe pozitia %d cu bsearch().\n", a, p);
+        }
+        else nu(a);
+
+        afisare(tab, n);
+    }
+
+    else printf("\n\t Eroare...\n");
+
+
+}
+void citire(float *tab, FILE *f, int n)
+{
+
+    for(int i=0; i< n; i++)
+    {
+        fscanf(f, "%f", (tab+i));
+    }
+
+}
+void afisare(float *tab, int n)
+{
+
+    printf("\n\t Sirul este : ");
+    for(int i=0; i< n; i++)
+    {
+        printf(" %.2f ", tab[i]);
+    }
+    printf("\n\n");
+}
+int iterativ(float tab[], int n, float a)
+{
+
+	int i, nr=0, aux;
+	for(i=0; i< n; i++)
+    {
+
+        if(tab[i]==a) return i;
+        nr++;
+
+    }
+    if(nr==0)return -1;
+
+}
+int recursiv(float a, float *tab, int st, int dr)
+{
+
+    if(st>dr) return -1;
+    int m=(st+dr)/2;
+
+    if(tab[m]==a) return m;
+    if(tab[m] > a) return recursiv(a, tab, st, m-1);
+    if(tab[m] < a) return recursiv(a, tab, m+1, dr);
+
+}
+int cmp(float *a, float *b)
+{
+    if(*a < *b) return -1;
+    if(*a > *b) return 1;
+    return 0;
+}
+void nu(float a)
+{
+    printf("\n\t Nu s-a gasit %.2f", a);
+}
+

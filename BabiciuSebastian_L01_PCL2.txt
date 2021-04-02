@@ -1,0 +1,293 @@
+1. Definiţi o funcţie macro MAX care determină şi afişează maximul dintre 2(3) numere introduse de la tastatură.
+#include <iostream>
+#define MAX2(nr1,nr2) ((nr1)>(nr2)?(nr1):(nr2))
+#define MAX3(MAX2, nr3) ((MAX2)>(nr3)?(MAX2):(nr3))
+
+using namespace std;
+
+int main(void)
+{
+    int nr1, nr2, nr3;
+    cout << "\n\t\tDati trei numere :\n";
+    cout << "\n\t\t\tnr1 = ";
+    cin >> nr1;
+    cout << "\n\t\t\tnr2 = ";
+    cin >> nr2;
+    cout << "\n\t\t\tnr3 = ";
+    cin >> nr3;
+    cout << "\n\t\tMaximul dintre " << nr1 << " si " << nr2 << " este : " << MAX2(nr1, nr2)<<endl;
+    cout << "\n\t\tMaximul dintre " << nr1 << ", " << nr2 << " si " << nr3 << " este " << MAX3(MAX2(nr1, nr2), nr3)<<endl;
+}
+
+
+
+------------------------------------------------------------------------------------------------------------------------------
+2. Definiţi o funcţie inline min() care determină şi afişează minimul dintre 2(3) numere întregi introduse de la tastatură.
+#include <iostream>
+#include <stdio.h>
+
+using namespace std;
+
+inline int min2(int, int);
+inline int min3(int, int, int);
+
+int main(void)
+{
+    int nr1, nr2, nr3;
+    cout << "\n\t\tDati doua numere :\n";
+    cout << "\n\t\t\tnr1 = ";
+    cin >> nr1;
+    cout << "\n\t\t\tnr2 = ";
+    cin >> nr2;
+    cout << "\n\t\t\tnr3 = ";
+    cin >> nr3;
+    cout << "\n\t\tMinimul dintre " << nr1 << " si " << nr2 << " este : " << min(nr1, nr2)<<endl;
+    cout << "\n\t\tMinimul dintre " << nr1 << ", " << nr2 << " si " << nr3 << " este " << min3(nr1, nr2, nr3)<<endl;
+}
+inline int min2(int nr1, int nr2)
+{
+    if(nr1<nr2)return nr1;
+    return nr2;
+}
+inline int min3(int nr1, int nr2, int nr3)
+{
+    if(min2(nr1, nr2)<nr3)return min2(nr1, nr2);
+    return nr3;
+}
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+3. Considerati o structura de date Student, care contine un camp de tip sir de caractere (maxim 30) pentru nume_prenume si un alt camp nota de tip int. Definiti un obiect de tip Student la care datele vor fi citite de la tastatura. Validati ca nume_prenume sa aiba cel putin 5 caractere iar nota sa fie >=5 si <=10. Afisati campurile obiectului in caz de introducere corecta.
+#include <iostream>
+#include <string>
+#include <string.h>
+#include <conio.h>
+
+using namespace std;
+
+class Student
+{
+    public:
+    string nume_prenume;
+    int nota;
+};
+
+void citire(Student *p, int n);
+void validare(Student *p, int n);
+
+int main()
+{
+
+    Student elev[30];
+    int n;
+    cout << "\n\t Dati nr de studenti : "; cin >> n;
+
+    for(int i=0; i<n; i++){
+        cout << "\n\t Datele studentului " << i+1 << " sunt : " << endl;
+        citire(&elev[i], n);
+    }
+
+    cout << "\n\t\t Campurile introduse corect sunt : ";
+    cout << "\n\t Nume si prenume\tnota ";
+    for(int i=0; i<n; i++){
+        validare(&elev[i], n);
+    }
+
+    return 0;
+}
+void citire(Student *p, int n)
+{
+
+    cout << "\n\t Nume si prenume : ";getline(cin, (*p).nume_prenume);
+    cout << "\n\t Nota : ";  cin >> (p->nota);
+
+}
+void validare( Student *p, int n)
+{
+
+    if(sizeof(p->nume_prenume)/sizeof(char)>=5 && p->nota >=5 && p->nota <=10){
+         cout << "\n\t " << (p->nume_prenume) << "\t\t" << (p->nota);
+    }
+}
+
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4. Consideraţi o funcţie cu 3 parametrii impliciţi (int, float, double) care returnează produsul acestor valori. Apelaţi funcţia considerând mai multe variante de apel concrete.
+#include <iostream>
+#include <stdio.h>
+
+using namespace std;
+
+double param_implic(int, float, double);
+
+int main(void)
+{
+
+    int nr1;
+    float nr2;
+    double nr3;
+    cout << "\n\n\t\t\tProdusul numerelor este : " << param_implic(5, -3.5, 90.8363) << endl;
+
+}
+double param_implic(int nr1, float nr2, double nr3)
+{
+    return nr1*nr2*nr3;
+}
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5. Folosind supraîncărcarea funcţiilor definiţi trei funcţii cu acelaşi nume dar cu tipuri diferite de parametri (int, int *, int&) care returnează radicalul unei valori. Analizaţi cazul transmiterii parametrilor prin valoare şi ca referinţă.
+#include <iostream>
+#include <stdio.h>
+#include <cmath>
+
+using namespace std;
+
+double radical (int);
+double radical (int , int*);
+double radical (int , int&);
+
+int main(void)
+{
+
+    int nr;
+    cout << "\n\n\t\tDati un numar :\n\n\t\t\t nr = ";
+    cin >> nr;
+    cout << "\n\t\tPrimul radical este : " << radical(nr)<< endl;
+    cout << "\n\t\tAl doilea radical este : " << radical(nr)<< endl;
+    cout << "\n\t\tAl treilea radical este : " << radical(nr)<< endl;
+
+}
+double radical(int a)
+{
+    return sqrt(a);
+}
+double radical (int *a)
+{
+    return sqrt(*a);
+}
+double radical (int &a)
+{
+    return sqrt(a);
+}
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+6. Determinaţi minimul dintr-un şir de 10 numere flotante (introduse de la tastatură/iniţializate) folosind funcţii cu un număr variabil de parametri. Se vor considera primele 7 valori din şir, apoi următoarele 3, după care se afişează minimul din cele 10 folosind valorile determinate anterior.
+#include <iostream>
+#include <stdarg.h>
+#include <math.h>
+#include <stdarg.h>
+#include <climits>
+#include <conio.h>
+
+float minim(int n, ...);
+
+int main(void)
+{
+
+    float nr[10];
+    printf( "\n\n\t\tDati numere : " );
+
+    for(int i=0; i<10; i++){
+        printf( "\n\tnr%d : ", i+1);
+        scanf("%f", &nr[i]);
+    }
+
+    printf("\n\n\t\tMinimul dintre primele 7 numere este: %f " , minim(7, nr[0], nr[1], nr[2], nr[3], nr[4], nr[5], nr[6]));
+    printf( "\n\n\t\tMinimul dintre urmatoarele 3 numere este: %f", minim(3, nr[7], nr[8], nr[9]));
+    printf( "\n\n\t\tMinimul dintre cele 10 numere este: %f", minim(10, nr[0], nr[1], nr[2], nr[3], nr[4], nr[5], nr[6], nr[7], nr[8], nr[9]));
+
+}
+
+float minim(int n, ...)
+{
+
+    float minim=HUGE_VAL, val;
+    va_list ap;
+     val=va_arg(ap, float);
+        va_start(ap, n);
+        for(int i=0; i<n; i++){
+            if (val < minim){
+                minim = val;
+            }
+        }
+        va_end(ap);
+    return minim;
+}
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+7. Scrieţi un program care face o codare simplă prin adaugarea la codul ASCII al caracterului o valoare n=3, folosind macro funcții. Exemplu: ‘a’ devine în urma codării ‘d’
+#include <iostream>
+#include <stdio.h>
+#define ASCII(a, n) (a+=n)
+
+using namespace std;
+
+int main(void)
+{
+
+    int n=3;
+    char ch;
+    cout << "\n\n\t\tDati un caracter : \n\t\t\t char : ";
+    cin >> ch;
+    cout << "\n\n\t\t\tNoul caracter este : " << ASCII(ch, n)<< endl;
+
+}
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+8. Să se scrie un program care afişează numele programului, data şi ora compilării şi numărul de linii pe care îl are acest program.
+
+#include <stdio.h>
+int main(void)
+{
+
+    printf( "\n\n\t\t\t\tInformatiile sunt : \n" );
+	printf("\n\t\t\tNumele programului : %s\n", __FILE__);
+	printf("\n\t\t\tData compilarii : %s\n", __DATE__);
+	printf("\n\t\t\tOra compilarii : %s\n", __TIME__);
+	printf("\n\t\t\tNr. de linii : %d\n", __LINE__);
+
+}
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9. Realizaţi o aplicaţie C/C++ care aplică un cod binar (mască) fiecărui element al unui şir printr-o funcţie codare şi invers îl decodează într-o funcţie decodare, folosind funcţii macro. Exemplu: fie caracterul ‘a’, codul mască 11001010:
+a. rezultatul codării ar fi:
+‘a’ -> 97 ASCII ->01100001 SAU EXCLUSIV logic pe biţi
+codul binar 11001010------------
+10101011
+b. decodarea se face:
+rezultatul codării ->10101011 SAU EXCLUSIV logic pe biţi
+codul binar 11001010
+------------
+01100001 codul ASCII al lui ‘a’
+
+#include <iostream>
+#include <conio.h>
+#define codare(a) (a^=11001010)
+#define decodare(a) (a^=11001010)
+
+using namespace std;
+
+int main(void)
+{
+
+    char ch;
+    cout << "\n\n\t\t\tDati o litera : \n\t\t\t\tch = ";
+    cin >> ch;
+    cout << "\n\t\tLitera este : " << ch << endl;
+    cout << "\n\t\tCu functia codare : " << codare(ch) << endl;
+    cout << "\n\t\tCu functia decodare : " << decodare(ch) << endl;
+
+}
